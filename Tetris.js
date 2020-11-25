@@ -1,5 +1,16 @@
 function playGame(){
     let board = new Board();
+    setInterval(function(){
+        if(board.reachedBottom){
+            board.generateNewPiece();
+            board.moveDown();
+            board.updateBoard();
+        }else{
+            board.moveDown();
+            board.updateBoard();
+        }
+        }, 1000);
+
 }
 
 class Board{
@@ -74,32 +85,30 @@ class Board{
 
     moveDown = () => {
         const oldCoordinates = this.coordinates;
+        if(oldCoordinates[0][1] === 21){
+            this.reachedBottom = true;
+            console.log('bottom');
+        }
         const newCoordinates = this.activePiece.moveDown();
-        // if(newCoordinates[0][1] === 21){
-        //     this.reachedBottom = true;
-        // }
-        console.log(newCoordinates);
+
         this.move(oldCoordinates, newCoordinates);
     }
 
     moveRight = () => {
         const oldCoordinates = this.coordinates;
         const newCoordinates = this.activePiece.moveRight();
-        console.log(newCoordinates);
         this.move(oldCoordinates, newCoordinates);
     }
 
     moveLeft = () => {
         const oldCoordinates = this.coordinates;
         const newCoordinates = this.activePiece.moveLeft();
-        console.log(newCoordinates);
         this.move(oldCoordinates, newCoordinates);
     }
 
     rotate = () => {
         const oldCoordinates = this.coordinates;
         const newCoordinates = this.activePiece.rotate();
-        console.log(newCoordinates);
         this.move(oldCoordinates, newCoordinates);
     }
 

@@ -96,6 +96,13 @@ class Board{
         this.move(oldCoordinates, newCoordinates);
     }
 
+    rotate = () => {
+        const oldCoordinates = this.coordinates;
+        const newCoordinates = this.activePiece.rotate();
+        console.log(newCoordinates);
+        this.move(oldCoordinates, newCoordinates);
+    }
+
     generateControls(){
         let controlsDiv = document.createElement('div');
         controlsDiv.setAttribute('id', 'controls');
@@ -127,6 +134,7 @@ class Board{
         let rotateButton = document.createElement('button');
         rotateButton.innerHTML = '^';
         rotateButton.setAttribute('id', 'rotateButton');
+        rotateButton.onclick = this.rotate;
         controlsDiv.appendChild(rotateButton);
 
         return controlsDiv;
@@ -139,6 +147,7 @@ class Piece{
         this.x = x;
         this.y = y;
         this.coordinates = [[x,y]];
+        this.firstRotationI = false;
     }
 
     stayInside(coordinates){
@@ -195,6 +204,72 @@ class Piece{
             [this.coordinates[2][0] + 1, this.coordinates[2][1]],
             [this.coordinates[3][0] + 1, this.coordinates[3][1]],
         ];
+        if(this.stayInside(newCoordinates)){
+            this.coordinates = newCoordinates;
+            return newCoordinates;
+        }else{
+            return [];
+        }
+    }
+
+    rotate = () => {
+        let rotateAround = [];
+        switch (this.shape) {
+            case 'I':
+                rotateAround = [this.coordinates[2][0],this.coordinates[2][1]];
+                break;
+            case 'O':
+                // no rotation
+                break;
+            case 'T':
+                rotateAround = [this.coordinates[1][0],this.coordinates[1][1]];
+                break;
+            case 'J':
+                rotateAround = [this.coordinates[2][0],this.coordinates[2][1]];
+                break;
+            case 'L':
+                rotateAround = [this.coordinates[2][0],this.coordinates[2][1]];
+                break;
+            case 'Z':
+                rotateAround = [this.coordinates[2][0],this.coordinates[2][1]];
+                break;
+            case 'S':
+                rotateAround = [this.coordinates[2][0],this.coordinates[2][1]];
+                break;
+        }
+        let newCoordinates = this.coordinates;
+        if(this.shape === 'I'){
+            if(this.firstRotationI){
+                // rotate 90 degrees clockwise with rotation matrix
+                newCoordinates = [
+                    [this.coordinates[0][1]-rotateAround[1]+rotateAround[0], rotateAround[0]-this.coordinates[0][0]+rotateAround[1]],
+                    [this.coordinates[1][1]-rotateAround[1]+rotateAround[0], rotateAround[0]-this.coordinates[1][0]+rotateAround[1]],
+                    [this.coordinates[2][1]-rotateAround[1]+rotateAround[0], rotateAround[0]-this.coordinates[2][0]+rotateAround[1]],
+                    [this.coordinates[3][1]-rotateAround[1]+rotateAround[0], rotateAround[0]-this.coordinates[3][0]+rotateAround[1]],
+                ];
+                this.firstRotationI = false;
+            }else{
+                // rotate 90 degrees counter-clockwise with rotation matrix
+                newCoordinates = [
+                    [rotateAround[1]-this.coordinates[0][1]+rotateAround[0], this.coordinates[0][0]-rotateAround[0]+rotateAround[1]],
+                    [rotateAround[1]-this.coordinates[1][1]+rotateAround[0], this.coordinates[1][0]-rotateAround[0]+rotateAround[1]],
+                    [rotateAround[1]-this.coordinates[2][1]+rotateAround[0], this.coordinates[2][0]-rotateAround[0]+rotateAround[1]],
+                    [rotateAround[1]-this.coordinates[3][1]+rotateAround[0], this.coordinates[3][0]-rotateAround[0]+rotateAround[1]],
+                ];
+                this.firstRotationI = true;
+            }
+        }else if(this.shape === 'O'){
+            // no rotation
+        }else{
+            // rotate 90 degrees clockwise with rotation matrix
+            newCoordinates = [
+                [this.coordinates[0][1]-rotateAround[1]+rotateAround[0], rotateAround[0]-this.coordinates[0][0]+rotateAround[1]],
+                [this.coordinates[1][1]-rotateAround[1]+rotateAround[0], rotateAround[0]-this.coordinates[1][0]+rotateAround[1]],
+                [this.coordinates[2][1]-rotateAround[1]+rotateAround[0], rotateAround[0]-this.coordinates[2][0]+rotateAround[1]],
+                [this.coordinates[3][1]-rotateAround[1]+rotateAround[0], rotateAround[0]-this.coordinates[3][0]+rotateAround[1]],
+            ];
+        }
+
         if(this.stayInside(newCoordinates)){
             this.coordinates = newCoordinates;
             return newCoordinates;

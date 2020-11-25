@@ -1,0 +1,70 @@
+* {
+    outline: none;
+}
+
+h1 {
+    font-family: Aharoni;
+    color: black;
+    text-align: center;
+    text-transform: capitalize;
+    font-size: 35px;
+    font-weight: normal;
+    margin-bottom: -3px;
+}
+
+#background{
+    text-align: center;
+    background-color: lightgray;
+    width: 300px;
+    height: 495px;
+    margin-top: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 10px;
+    padding: 20px 10px;
+}
+
+div.block {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    position: relative;
+    border: 2px solid darkgrey;
+    margin-top: -5px;
+}
+
+button {
+    background-color: gray;
+    color: white;
+    width: 50px;
+    height: 50px;
+    font-family: Arial;
+    font-size: 20px;
+    border-radius: 5px;
+    margin: 3px 2px;
+    border: none;
+}
+
+#downButton{
+    position: relative;
+    top: -80px;
+    left: 850px;
+}
+
+#leftButton{
+    position: relative;
+    top: -190px;
+    left: 740px;
+}
+
+#rightButton{
+    position: relative;
+    top: -190px;
+    left: 902px;
+}
+
+#rotateButton{
+    position: relative;
+    top: -300px;
+    left: 850px;
+}

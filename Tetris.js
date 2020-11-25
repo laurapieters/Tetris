@@ -1,16 +1,15 @@
 function playGame(){
     let board = new Board();
-    board.generateNewPiece();
-    let boardDiv = board.createBoard();
-    let controlsDiv = board.generateControls();
-    document.body.appendChild(boardDiv);
-    document.body.appendChild(controlsDiv);
 }
 
 class Board{
     constructor() {
         this.blocks = this.createBlocks();
-        // this.generateNewPiece();
+        this.generateNewPiece();
+        this.board = this.createBoard();
+        this.controls = this.generateControls();
+        document.body.appendChild(this.board);
+        document.body.appendChild(this.controls);
     }
 
     createBlocks(){
@@ -53,52 +52,48 @@ class Board{
         const shape = shapes[nr];
         let piece = new Piece(shape,4,3, this.blocks);
         this.activePiece = piece;
-        let coordinates = piece.createPiece();
-        for(let i = 0; i < coordinates.length; i++){
-            this.blocks[coordinates[i][0]][coordinates[i][1]].changeColor(piece.color);
+        this.coordinates = piece.createPiece();
+        this.reachedBottom = false;
+        for(let i = 0; i < this.coordinates.length; i++){
+            this.blocks[this.coordinates[i][0]][this.coordinates[i][1]].changeColor(piece.color);
+        }
+    }
+
+    move(oldCoordinates, newCoordinates){
+        // old blocks to grey
+        for(let i = 0; i < oldCoordinates.length; i++){
+            this.blocks[oldCoordinates[i][0]][oldCoordinates[i][1]].changeColor('lightgrey');
+        }
+        this.coordinates = newCoordinates;
+        // new blocks to color
+        for(let i = 0; i < newCoordinates.length; i++){
+            this.blocks[newCoordinates[i][0]][newCoordinates[i][1]].changeColor(this.activePiece.color);
+            this.updateBoard();
         }
     }
 
     moveDown = () => {
-        // old blocks to grey
-        let oldCoordinates = this.activePiece.createPiece();
-        for(let i = 0; i < oldCoordinates.length; i++){
-            this.blocks[oldCoordinates[i][0]][oldCoordinates[i][1]].changeColor('lightgrey');
-        }
-        // new blocks to color
-        let newCoordinates = this.activePiece.moveDown();
-        for(let i = 0; i < newCoordinates.length; i++){
-            this.blocks[newCoordinates[i][0]][newCoordinates[i][1]].changeColor(this.activePiece.color);
-        }
-        this.updateBoard();
+        const oldCoordinates = this.coordinates;
+        const newCoordinates = this.activePiece.moveDown();
+        // if(newCoordinates[0][1] === 21){
+        //     this.reachedBottom = true;
+        // }
+        console.log(newCoordinates);
+        this.move(oldCoordinates, newCoordinates);
     }
 
     moveRight = () => {
-        // old blocks to grey
-        let oldCoordinates = this.activePiece.createPiece();
-        for(let i = 0; i < oldCoordinates.length; i++){
-            this.blocks[oldCoordinates[i][0]][oldCoordinates[i][1]].changeColor('lightgrey');
-        }
-        // new blocks to color
-        let newCoordinates = this.activePiece.moveRight();
-        for(let i = 0; i < newCoordinates.length; i++){
-            this.blocks[newCoordinates[i][0]][newCoordinates[i][1]].changeColor(this.activePiece.color);
-        }
-        this.updateBoard();
+        const oldCoordinates = this.coordinates;
+        const newCoordinates = this.activePiece.moveRight();
+        console.log(newCoordinates);
+        this.move(oldCoordinates, newCoordinates);
     }
 
     moveLeft = () => {
-        // old blocks to grey
-        let oldCoordinates = this.activePiece.createPiece();
-        for(let i = 0; i < oldCoordinates.length; i++){
-            this.blocks[oldCoordinates[i][0]][oldCoordinates[i][1]].changeColor('lightgrey');
-        }
-        // new blocks to color
-        let newCoordinates = this.activePiece.moveLeft();
-        for(let i = 0; i < newCoordinates.length; i++){
-            this.blocks[newCoordinates[i][0]][newCoordinates[i][1]].changeColor(this.activePiece.color);
-        }
-        this.updateBoard();
+        const oldCoordinates = this.coordinates;
+        const newCoordinates = this.activePiece.moveLeft();
+        console.log(newCoordinates);
+        this.move(oldCoordinates, newCoordinates);
     }
 
     generateControls(){
@@ -146,28 +141,66 @@ class Piece{
         this.coordinates = [[x,y]];
     }
 
+    stayInside(coordinates){
+        let inside = true;
+        // not past bottom border
+        if(Math.max(coordinates[0][1],coordinates[1][1],coordinates[2][1],coordinates[3][1]) >= 22){
+            inside = false;
+        }
+        // not past right border
+        if(Math.max(coordinates[0][0],coordinates[1][0],coordinates[2][0],coordinates[3][0]) >= 10){
+            inside = false;
+        }
+        // not past left border
+        if(Math.min(coordinates[0][0],coordinates[1][0],coordinates[2][0],coordinates[3][0]) < 0){
+            inside = false;
+        }
+        return inside;
+    }
+
     moveDown = () => {
-        this.coordinates[0][1] ++;
-        this.coordinates[1][1] ++;
-        this.coordinates[2][1] ++;
-        this.coordinates[3][1] ++;
-        return this.coordinates;
+        const newCoordinates = [
+            [this.coordinates[0][0], this.coordinates[0][1] + 1],
+            [this.coordinates[1][0], this.coordinates[1][1] + 1],
+            [this.coordinates[2][0], this.coordinates[2][1] + 1],
+            [this.coordinates[3][0], this.coordinates[3][1] + 1],
+        ];
+        if(this.stayInside(newCoordinates)){
+            this.coordinates = newCoordinates;
+            return newCoordinates;
+        }else{
+            return [];
+        }
     }
 
     moveLeft = () => {
-        this.coordinates[0][0] --;
-        this.coordinates[1][0] --;
-        this.coordinates[2][0] --;
-        this.coordinates[3][0] --;
-        return this.coordinates;
+        const newCoordinates = [
+            [this.coordinates[0][0] - 1, this.coordinates[0][1]],
+            [this.coordinates[1][0] - 1, this.coordinates[1][1]],
+            [this.coordinates[2][0] - 1, this.coordinates[2][1]],
+            [this.coordinates[3][0] - 1, this.coordinates[3][1]],
+        ];
+        if(this.stayInside(newCoordinates)){
+            this.coordinates = newCoordinates;
+            return newCoordinates;
+        }else{
+            return [];
+        }
     }
 
     moveRight = () => {
-        this.coordinates[0][0] ++;
-        this.coordinates[1][0] ++;
-        this.coordinates[2][0] ++;
-        this.coordinates[3][0] ++;
-        return this.coordinates;
+        const newCoordinates = [
+            [this.coordinates[0][0] + 1, this.coordinates[0][1]],
+            [this.coordinates[1][0] + 1, this.coordinates[1][1]],
+            [this.coordinates[2][0] + 1, this.coordinates[2][1]],
+            [this.coordinates[3][0] + 1, this.coordinates[3][1]],
+        ];
+        if(this.stayInside(newCoordinates)){
+            this.coordinates = newCoordinates;
+            return newCoordinates;
+        }else{
+            return [];
+        }
     }
 
     createPiece(){

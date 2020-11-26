@@ -2,6 +2,7 @@ function playGame(){
     let board = new Board();
     setInterval(function(){
         if(board.reachedBottom){
+            board.completeRow();
             board.generateNewPiece();
             board.moveDown();
             board.updateBoard();
@@ -70,6 +71,58 @@ class Board{
         }
     }
 
+    completeRow(){
+        let completeRow = true;
+        for(let i = 0; i < this.blocks.length; i++){
+            if(this.blocks[i][21].color === 'lightgrey'){
+                completeRow = false;
+            }
+        }
+        if(completeRow){
+            // move all colors one down and add new greys on top
+            for(let i = 0; i < 10; i++){
+                for(let j = 20; j > 3; j--) {
+                    this.blocks[i][j+1].changeColor(this.blocks[i][j].color);
+                    this.blocks[i][4].changeColor('lightgrey');
+                }
+            }
+        }
+    }
+
+    movePossible(oldCoordinates, newCoordinates){
+        // check which blocks of newCoordinates are also in oldCoordinates,
+        // no problems if these are nog grey when moving
+        let realNew = [];
+        let realNewSmall = [];
+        for(let i = 0; i < newCoordinates.length; i++){
+            for(let j = 0; j < oldCoordinates.length; j++){
+                if(oldCoordinates[j][0] === newCoordinates[i][0] &&
+                    oldCoordinates[j][1] === newCoordinates[i][1]){
+                    realNew.push(false);
+                }else{
+                    realNew.push(true);
+                }
+            }
+        }
+        for(let s = 0; s < realNew.length; s+=4){
+            if(realNew[s] && realNew[s+1] && realNew[s+2] && realNew[s+3]){
+                realNewSmall.push(true);
+            }else{
+                realNewSmall.push(false);
+            }
+        }
+
+        let movePossible = true;
+        for(let r = 0; r < newCoordinates.length; r++){
+            let i = newCoordinates[r][0];
+            let j = newCoordinates[r][1];
+            if(this.blocks[i][j].color !== 'lightgrey' && realNewSmall[r]){
+                movePossible = false;
+            }
+        }
+        return movePossible;
+    }
+
     move(oldCoordinates, newCoordinates){
         // old blocks to grey
         for(let i = 0; i < oldCoordinates.length; i++){
@@ -85,25 +138,45 @@ class Board{
 
     moveDown = () => {
         const oldCoordinates = this.coordinates;
-        if(oldCoordinates[0][1] === 21){
-            this.reachedBottom = true;
-            console.log('bottom');
+        let newCoordinates = this.activePiece.moveDown();
+        // check if move possible
+        if(!this.movePossible(oldCoordinates,newCoordinates)){
+            newCoordinates = [];
         }
-        const newCoordinates = this.activePiece.moveDown();
-
-        this.move(oldCoordinates, newCoordinates);
+        // check if bottom reached
+        if(newCoordinates.length === 0){
+            this.reachedBottom = true;
+        }else{
+            this.move(oldCoordinates, newCoordinates);
+        }
     }
 
     moveRight = () => {
         const oldCoordinates = this.coordinates;
-        const newCoordinates = this.activePiece.moveRight();
-        this.move(oldCoordinates, newCoordinates);
+        let newCoordinates = this.activePiece.moveRight();
+        // check if move possible
+        if(!this.movePossible(oldCoordinates,newCoordinates)){
+            newCoordinates = [];
+        }
+        if(newCoordinates.length === 0){
+            this.reachedBottom = true;
+        }else{
+            this.move(oldCoordinates, newCoordinates);
+        }
     }
 
     moveLeft = () => {
         const oldCoordinates = this.coordinates;
-        const newCoordinates = this.activePiece.moveLeft();
-        this.move(oldCoordinates, newCoordinates);
+        let newCoordinates = this.activePiece.moveLeft();
+        // check if move possible
+        if(!this.movePossible(oldCoordinates,newCoordinates)){
+            newCoordinates = [];
+        }
+        if(newCoordinates.length === 0){
+            this.reachedBottom = true;
+        }else{
+            this.move(oldCoordinates, newCoordinates);
+        }
     }
 
     rotate = () => {

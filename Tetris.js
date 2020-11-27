@@ -1,17 +1,26 @@
 function playGame(){
     let board = new Board();
-    setInterval(function(){
+    const interval = setInterval(function(){
         if(board.reachedBottom){
             board.completeRow();
-            board.generateNewPiece();
-            board.moveDown();
-            board.updateBoard();
+            if(board.blocks[4][4].color !== 'lightgrey'){
+                // game over
+                let gameOver = document.createElement('div');
+                gameOver.setAttribute('id', 'gameOver');
+                gameOver.innerHTML = 'Game over';
+                document.body.appendChild(gameOver);
+                clearInterval(interval);
+            }else{
+                board.generateNewPiece();
+                board.moveDown();
+                board.updateBoard();
+            }
         }else{
             board.moveDown();
             board.updateBoard();
         }
-        }, 1000);
 
+        }, 1000);
 }
 
 class Board{

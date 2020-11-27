@@ -63,6 +63,18 @@ div.block {
     position: relative;
 }
 
+#gameOver {
+    font-family: Aharoni;
+    font-size: 25px;
+    background-color: white;
+    color: grey;
+    border-radius: 5px;
+    position: absolute;
+    left: 555px;
+    top: 230px;
+    padding: 10px 10px;
+}
+
 button {
     background-color: gray;
     color: white;

@@ -16,11 +16,14 @@ function playGame(){
 
 class Board{
     constructor() {
+        this.score = 0;
         this.blocks = this.createBlocks();
         this.generateNewPiece();
         this.board = this.createBoard();
+        this.display = this.generateSideDisplay();
         this.controls = this.generateControls();
         document.body.appendChild(this.board);
+        document.body.appendChild(this.display);
         document.body.appendChild(this.controls);
     }
 
@@ -52,10 +55,10 @@ class Board{
 
     updateBoard(){
         const board = document.getElementById('background');
-        const controls = document.getElementById('controls');
+        const display = document.getElementById('display');
         board.parentNode.removeChild(board);
         const boardDiv = this.createBoard();
-        document.body.insertBefore(boardDiv,controls);
+        document.body.insertBefore(boardDiv,display);
     }
 
     generateNewPiece(){
@@ -79,6 +82,8 @@ class Board{
             }
         }
         if(completeRow){
+            this.score += 10;
+            document.getElementById('score').innerHTML = this.score;
             // move all colors one down and add new greys on top
             for(let i = 0; i < 10; i++){
                 for(let j = 20; j > 3; j--) {
@@ -159,7 +164,7 @@ class Board{
             newCoordinates = [];
         }
         if(newCoordinates.length === 0){
-            this.reachedBottom = true;
+            // do not move
         }else{
             this.move(oldCoordinates, newCoordinates);
         }
@@ -173,7 +178,7 @@ class Board{
             newCoordinates = [];
         }
         if(newCoordinates.length === 0){
-            this.reachedBottom = true;
+            // do not move
         }else{
             this.move(oldCoordinates, newCoordinates);
         }
@@ -220,6 +225,27 @@ class Board{
         controlsDiv.appendChild(rotateButton);
 
         return controlsDiv;
+    }
+
+    generateSideDisplay(){
+        let displayDiv = document.createElement('div');
+        displayDiv.setAttribute('id', 'display');
+
+        let title = document.createElement('h1');
+        title.innerHTML = 'Tetris';
+        displayDiv.appendChild(title);
+
+        let scoreWord = document.createElement('div')
+        scoreWord.setAttribute('id', 'scoreWord');
+        scoreWord.innerHTML = 'score: ';
+        displayDiv.appendChild(scoreWord);
+
+        let scoreDiv = document.createElement('div');
+        scoreDiv.setAttribute('id', 'score');
+        scoreDiv.innerHTML = this.score;
+        displayDiv.appendChild(scoreDiv);
+
+        return displayDiv;
     }
 }
 

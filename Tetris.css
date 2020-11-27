@@ -4,7 +4,7 @@
 
 h1 {
     font-family: Aharoni;
-    color: black;
+    color: grey;
     text-align: center;
     text-transform: capitalize;
     font-size: 35px;
@@ -17,11 +17,18 @@ h1 {
     background-color: lightgray;
     width: 300px;
     height: 495px;
-    margin-top: 0px;
+    margin-top: 25px;
     margin-left: auto;
     margin-right: auto;
     border-radius: 10px;
     padding: 20px 10px;
+}
+
+#display {
+    width: 150px;
+    position: relative;
+    left: 800px;
+    top: -530px;
 }
 
 div.block {
@@ -31,6 +38,29 @@ div.block {
     position: relative;
     border: 2px solid darkgrey;
     margin-top: -5px;
+}
+
+#score {
+    font-family: Aharoni;
+    font-size: 30px;
+    background-color: white;
+    color: grey;
+    width: 100px;
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid grey;
+    position: relative;
+    left: 25px;
+    top: 10px;
+}
+
+#scoreWord {
+    color: grey;
+    font-family: Aharoni;
+    font-size: 18px;
+    text-align: center;
+    top: 10px;
+    position: relative;
 }
 
 button {
@@ -47,24 +77,32 @@ button {
 
 #downButton{
     position: relative;
-    top: -80px;
+    top: -180px;
     left: 850px;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 #leftButton{
     position: relative;
-    top: -190px;
+    top: -290px;
     left: 740px;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 #rightButton{
     position: relative;
-    top: -190px;
+    top: -290px;
     left: 902px;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 #rotateButton{
     position: relative;
-    top: -300px;
+    top: -400px;
     left: 850px;
+    font-size: 30px;
+    padding-top: 12px;
 }

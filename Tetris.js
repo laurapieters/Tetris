@@ -2,7 +2,10 @@ function playGame(){
     let board = new Board();
     const interval = setInterval(function(){
         if(board.reachedBottom){
-            board.completeRow();
+            // check for complete row 4 times, max you can get in one round
+            for(let i = 0; i < 4; i++){
+                board.completeRow();
+            }
             if(board.blocks[4][4].color !== 'lightgrey'){
                 // game over
                 let gameOver = document.createElement('div');
@@ -91,7 +94,7 @@ class Board{
             }
         }
         if(completeRow){
-            this.score += 10;
+            this.score += 100;
             document.getElementById('score').innerHTML = this.score;
             // move all colors one down and add new greys on top
             for(let i = 0; i < 10; i++){

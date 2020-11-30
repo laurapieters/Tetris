@@ -6,7 +6,7 @@ function playGame(){
             for(let i = 0; i < 4; i++){
                 board.completeRow();
             }
-            if(board.blocks[4][4].color !== 'lightgrey'){
+            if(board.blocks[4][4].color !== 'white'){
                 // game over
                 let gameOver = document.createElement('div');
                 gameOver.setAttribute('id', 'gameOver');
@@ -44,7 +44,7 @@ class Board{
         for(let i = 0; i < 10; i++){
             let yBlocks = [];
             for(let j = 0; j < 22; j++){ // 18 rows + 4 invisible
-                let block = new Block(i,j, 'lightgrey');
+                let block = new Block(i,j, 'white','white','white');
                 yBlocks.push(block);
             }
             blocks.push(yBlocks);
@@ -82,14 +82,14 @@ class Board{
         this.coordinates = piece.createPiece();
         this.reachedBottom = false;
         for(let i = 0; i < this.coordinates.length; i++){
-            this.blocks[this.coordinates[i][0]][this.coordinates[i][1]].changeColor(piece.color);
+            this.blocks[this.coordinates[i][0]][this.coordinates[i][1]].changeColor(piece.bordertop, piece.color, piece.borderlr, piece.borderbottom);
         }
     }
 
     completeRow(){
         let completeRow = true;
         for(let i = 0; i < this.blocks.length; i++){
-            if(this.blocks[i][21].color === 'lightgrey'){
+            if(this.blocks[i][21].color === 'white'){
                 completeRow = false;
             }
         }
@@ -99,8 +99,8 @@ class Board{
             // move all colors one down and add new greys on top
             for(let i = 0; i < 10; i++){
                 for(let j = 20; j > 3; j--) {
-                    this.blocks[i][j+1].changeColor(this.blocks[i][j].color);
-                    this.blocks[i][4].changeColor('lightgrey');
+                    this.blocks[i][j+1].changeColor(this.blocks[i][j].bordertop,this.blocks[i][j].color, this.blocks[i][j].borderlr, this.blocks[i][j].borderbottom);
+                    this.blocks[i][4].changeColor('white','white','white','white');
                 }
             }
         }
@@ -133,7 +133,7 @@ class Board{
         for(let r = 0; r < newCoordinates.length; r++){
             let i = newCoordinates[r][0];
             let j = newCoordinates[r][1];
-            if(this.blocks[i][j].color !== 'lightgrey' && realNewSmall[r]){
+            if(this.blocks[i][j].color !== 'white' && realNewSmall[r]){
                 movePossible = false;
             }
         }
@@ -143,12 +143,12 @@ class Board{
     move(oldCoordinates, newCoordinates){
         // old blocks to grey
         for(let i = 0; i < oldCoordinates.length; i++){
-            this.blocks[oldCoordinates[i][0]][oldCoordinates[i][1]].changeColor('lightgrey');
+            this.blocks[oldCoordinates[i][0]][oldCoordinates[i][1]].changeColor('white','white','white','white');
         }
         this.coordinates = newCoordinates;
         // new blocks to color
         for(let i = 0; i < newCoordinates.length; i++){
-            this.blocks[newCoordinates[i][0]][newCoordinates[i][1]].changeColor(this.activePiece.color);
+            this.blocks[newCoordinates[i][0]][newCoordinates[i][1]].changeColor(this.activePiece.bordertop,this.activePiece.color,this.activePiece.borderlr,this.activePiece.borderbottom);
             this.updateBoard();
         }
     }
@@ -244,7 +244,31 @@ class Board{
         displayDiv.setAttribute('id', 'display');
 
         let title = document.createElement('h1');
-        title.innerHTML = 'Tetris';
+        let T = document.createElement('span');
+        T.setAttribute('id', 'T');
+        T.innerHTML = 'T';
+        title.appendChild(T);
+        let e = document.createElement('span');
+        e.setAttribute('id', 'e');
+        e.innerHTML = 'e';
+        title.appendChild(e);
+        let t = document.createElement('span');
+        t.setAttribute('id', 't');
+        t.innerHTML = 't';
+        title.appendChild(t);
+        let r = document.createElement('span');
+        r.setAttribute('id', 'r');
+        r.innerHTML = 'r';
+        title.appendChild(r);
+        let i = document.createElement('span');
+        i.setAttribute('id', 'i');
+        i.innerHTML = 'i';
+        title.appendChild(i);
+        let s = document.createElement('span');
+        s.setAttribute('id', 's');
+        s.innerHTML = 's';
+        title.appendChild(s);
+        // title.innerHTML = 'Tetris';
         displayDiv.appendChild(title);
 
         let scoreWord = document.createElement('div')
@@ -401,43 +425,64 @@ class Piece{
     createPiece(){
         switch (this.shape) {
             case 'I':
-                this.color = 'deepskyblue';
+                this.bordertop = '#def1f4';
+                this.color = '#aedde5';
+                this.borderlr = '#83b9c3';
+                this.borderbottom = '#4a8c98';
                 this.coordinates.push([this.x,this.y-1]);
                 this.coordinates.push([this.x,this.y-2]);
                 this.coordinates.push([this.x,this.y-3]);
                 break;
             case 'O':
-                this.color = 'yellow'
+                this.bordertop = '#ffffb5';
+                this.color = '#f9f0a3';
+                this.borderlr = '#ecdf86';
+                this.borderbottom = '#d9ad43';
                 this.coordinates.push([this.x,this.y-1]);
                 this.coordinates.push([this.x+1,this.y]);
                 this.coordinates.push([this.x+1,this.y-1]);
                 break;
             case 'T':
-                this.color = 'purple';
+                this.bordertop = '#ffedf5';
+                this.color = '#ebd7e0';
+                this.borderlr = '#ccaacb';
+                this.borderbottom = '#966d95';
                 this.coordinates.push([this.x,this.y-1]);
                 this.coordinates.push([this.x+1,this.y-1]);
                 this.coordinates.push([this.x-1,this.y-1]);
                 break;
             case 'J':
-                this.color = 'hotpink';
+                this.bordertop = '#ffe5db';
+                this.color = '#ffc6bf';
+                this.borderlr = '#de9a91';
+                this.borderbottom = '#bd5c6a';
                 this.coordinates.push([this.x+1,this.y]);
                 this.coordinates.push([this.x+1,this.y-1]);
                 this.coordinates.push([this.x+1,this.y-2]);
                 break;
             case 'L':
-                this.color = 'darkorange';
+                this.bordertop = '#ffe6d5';
+                this.color = '#ffc7a2';
+                this.borderlr = '#e7a477';
+                this.borderbottom = '#cb7943';
                 this.coordinates.push([this.x+1,this.y]);
                 this.coordinates.push([this.x,this.y-1]);
                 this.coordinates.push([this.x,this.y-2]);
                 break;
             case 'Z':
-                this.color = 'yellowgreen';
+                this.bordertop = '#e2f4e1';
+                this.color = '#cce2cb';
+                this.borderlr = '#97c1a9';
+                this.borderbottom = '#589371';
                 this.coordinates.push([this.x+1,this.y]);
                 this.coordinates.push([this.x,this.y-1]);
                 this.coordinates.push([this.x-1,this.y-1]);
                 break;
             case 'S':
-                this.color = 'red';
+                this.bordertop = '#ffddd8';
+                this.color = '#ffaba0';
+                this.borderlr = '#de7264';
+                this.borderbottom = '#b34a3c';
                 this.coordinates.push([this.x+1,this.y]);
                 this.coordinates.push([this.x+1,this.y-1]);
                 this.coordinates.push([this.x+2,this.y-1]);
@@ -449,20 +494,30 @@ class Piece{
 }
 
 class Block{
-    constructor(x, y, color) {
+    constructor(x, y, bordertop, color, borderlr, borderbottom) {
+        this.bordertop = bordertop;
         this.color = color;
+        this.borderlr = borderlr;
+        this.borderbottom = borderbottom;
         this.x = x;
         this.y = y;
     }
 
-    changeColor(color){
+    changeColor(bordertop, color, borderlr, borderbottom){
+        this.bordertop = bordertop;
         this.color = color;
+        this.borderlr = borderlr;
+        this.borderbottom = borderbottom;
     }
 
     createBlock(){
         this.blockDiv = document.createElement('div');
         this.blockDiv.setAttribute('class','block');
+        this.blockDiv.style.borderTopColor = this.bordertop;
         this.blockDiv.style.backgroundColor = this.color;
+        this.blockDiv.style.borderLeftColor = this.borderlr;
+        this.blockDiv.style.borderRightColor = this.borderlr;
+        this.blockDiv.style.borderBottomColor = this.borderbottom;
         return this.blockDiv;
     }
 

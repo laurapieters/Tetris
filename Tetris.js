@@ -12,6 +12,7 @@ function playGame(){
                 gameOver.setAttribute('id', 'gameOver');
                 gameOver.innerHTML = 'Game over';
                 document.body.appendChild(gameOver);
+                board.activePiece.coordinates = []; // cannot move last piece
                 clearInterval(interval);
             }else{
                 board.generateNewPiece();
@@ -108,7 +109,7 @@ class Board{
 
     movePossible(oldCoordinates, newCoordinates){
         // check which blocks of newCoordinates are also in oldCoordinates,
-        // no problems if these are nog grey when moving
+        // no problems if these are still white when moving
         let realNew = [];
         let realNewSmall = [];
         for(let i = 0; i < newCoordinates.length; i++){
